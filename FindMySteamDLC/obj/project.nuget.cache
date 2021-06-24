@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "9Ef05Xmjzmj2T2+JzUcMX1CgH8PfNEraRuyi92B3BLdZgK6hlKCaLHXU4jXhIDeZO+ctMN099TJVgbUQfRUvpA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\evanr\\source\\repos\\FindMySteamDLC\\FindMySteamDLC\\FindMySteamDLC.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\evanr\\.nuget\\packages\\ookii.dialogs.wpf\\3.1.0\\ookii.dialogs.wpf.3.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
