@@ -10,6 +10,7 @@ namespace FindMySteamDLC
         public string Name { get; set; }
         public int AppID { get; set; }
         public List<Dlc> Dlcs { get; set; }
+        public bool HasBeenFetchForDlcs { get; set; }
 
         public string PathToIcon
         {

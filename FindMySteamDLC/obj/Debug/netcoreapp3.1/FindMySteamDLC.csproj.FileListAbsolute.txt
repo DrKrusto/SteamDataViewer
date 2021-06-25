@@ -24,3 +24,5 @@ C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\bin\Debug\netcoreapp3.
 C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\FindMySteamDLC.csproj.CopyComplete
 C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\DlcWindow.g.cs
 C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\DlcWindow.baml
+C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\LoadingWindow.g.cs
+C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\LoadingWindow.baml

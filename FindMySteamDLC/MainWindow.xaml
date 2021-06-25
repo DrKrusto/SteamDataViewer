@@ -35,7 +35,7 @@
         <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_searchGames" HorizontalAlignment="Left" Height="39" VerticalAlignment="Center" Width="135" MouseDown="SearchGames">
             <Label Content="Where are my games?" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
         </Grid>
-        <Grid Grid.Row="1" Margin="251,215,0,34">
+        <Grid Grid.Row="1" Margin="251,215,0,0">
             <ListBox ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -44,8 +44,6 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </Grid>
-        <Grid Style="{DynamicResource WindowButtonBarStyle}" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="460" Margin="251,431,0,0" Grid.Row="1">
-            <Label Content="Get other DLC's" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="16" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0" MouseDown="ShowDlcWindow"/>
-        </Grid>
     </Grid>
+    
 </Window>

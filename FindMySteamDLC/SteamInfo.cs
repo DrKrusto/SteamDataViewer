@@ -7,6 +7,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Windows;
+using Ookii.Dialogs.Wpf;
+using System.Threading.Tasks;
 
 namespace FindMySteamDLC
 {
@@ -52,6 +54,7 @@ namespace FindMySteamDLC
             {
                 SteamInfo.Games.Add(g);
             }
+            SteamInfo.FetchAllNonInstalledDlc();
         }
 
         static public ICollection<Game> FetchGamesFromSteam(string pathToSteam)
@@ -102,7 +105,7 @@ namespace FindMySteamDLC
             return games;
         }
 
-        static public List<Dlc> FetchNonInstalledDlc(Game game)
+        static public void FetchNonInstalledDlc(Game game, ProgressDialog progressDialog)
         {
             int indexOfGame = SteamInfo.Games.IndexOf(game);
             List<Dlc> dlcs = new List<Dlc>();
@@ -119,14 +122,38 @@ namespace FindMySteamDLC
                         {
                             string dlcJson = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + appid);
                             dlcJson = dlcJson.Split(',')[1];
-                            dlcJson = dlcJson.Split(':')[1];
+                            try
+                            {
+                                dlcJson = dlcJson.Split('\"')[3];
+                            }
+                            catch
+                            {
+                                dlcJson = "Unknown name: " + appid;
+                            }
                             dlcJson = dlcJson.Trim('\"');
+                            progressDialog.Description = String.Format("Found {0}", dlcJson);
                             dlcs.Add(new Dlc() { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
                         }
                     }
+                    game.Dlcs.AddRange(dlcs);
                 }
             }
-            return dlcs;
+        }
+
+        static public void FetchAllNonInstalledDlc()
+        {
+            ProgressDialog progressDialog = new ProgressDialog() { ProgressBarStyle = ProgressBarStyle.None, ShowCancelButton = false };
+            progressDialog.Show();
+            foreach (Game game in SteamInfo.games)
+            {
+                progressDialog.Description = "Searching DLC's...";
+                if (!game.HasBeenFetchForDlcs)
+                {
+                    progressDialog.Text = game.Name;
+                    SteamInfo.FetchNonInstalledDlc(game, progressDialog);
+                    game.HasBeenFetchForDlcs = true;
+                }
+            }
         }
     }
 }

@@ -84,18 +84,8 @@ namespace FindMySteamDLC
                         }
                     }
                 }
+                SteamInfo.FetchAllNonInstalledDlc();
             }
-        }
-
-        private void ShowDlcWindow(object sender, MouseButtonEventArgs e)
-        {
-            Game selectedGame = (Game)this.lb_games.SelectedItem;
-            if (!selectedGame.Dlcs.Any(i => i.IsInstalled == false))
-            {
-                selectedGame.Dlcs.AddRange(SteamInfo.FetchNonInstalledDlc(selectedGame));
-            }
-            DlcWindow dlcWindow = new DlcWindow(selectedGame);
-            dlcWindow.ShowDialog();
         }
     }
 }
