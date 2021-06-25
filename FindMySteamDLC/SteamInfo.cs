@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Windows;
 
@@ -79,7 +81,16 @@ namespace FindMySteamDLC
                                 {
                                     if (line.Contains("\"dlcappid\""))
                                     {
-                                        game.Dlcs.Add(new Dlc() { AppID = Convert.ToInt32(line.Split('"')[3].Trim()) });
+                                        int dlcAppID = Convert.ToInt32(line.Split('"')[3].Trim());
+                                        string json;
+                                        using (WebClient wc = new WebClient())
+                                        {
+                                            json = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + dlcAppID).Trim(new char[] { '{', '}' });
+                                            json = json.Split(',')[1];
+                                            json = json.Split(':')[1];
+                                            json = json.Trim('\"');
+                                        }
+                                        game.Dlcs.Add(new Dlc() { AppID = dlcAppID, IsInstalled = true, Name = json});
                                     }
                                 }
                             }
@@ -89,6 +100,33 @@ namespace FindMySteamDLC
                 }
             }
             return games;
+        }
+
+        static public List<Dlc> FetchNonInstalledDlc(Game game)
+        {
+            int indexOfGame = SteamInfo.Games.IndexOf(game);
+            List<Dlc> dlcs = new List<Dlc>();
+            string json;
+            using (WebClient wc = new WebClient())
+            {
+                json = wc.DownloadString("http://store.steampowered.com/api/appdetails/?appids=" + game.AppID);
+                if (json.Contains("\"dlc\""))
+                {
+                    json = json.Remove(0, json.IndexOf("\"dlc\"")).Split('[', ']')[1];
+                    foreach (string appid in json.Split(','))
+                    {
+                        if (!SteamInfo.Games[indexOfGame].Dlcs.Exists(i => i.AppID == Convert.ToInt32(appid)))
+                        {
+                            string dlcJson = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + appid);
+                            dlcJson = dlcJson.Split(',')[1];
+                            dlcJson = dlcJson.Split(':')[1];
+                            dlcJson = dlcJson.Trim('\"');
+                            dlcs.Add(new Dlc() { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
+                        }
+                    }
+                }
+            }
+            return dlcs;
         }
     }
 }

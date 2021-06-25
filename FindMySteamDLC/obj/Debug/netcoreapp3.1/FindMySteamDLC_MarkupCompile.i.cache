@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\evanr\source\repos\FindMySteamDLC\FindMySteamDLC\App.xaml
-11407045341
+2589654660
 
-92128363475
+101174895565
 200825061920
-MainWindow.xaml;
+DlcWindow.xaml;MainWindow.xaml;
 
-True
+False
 

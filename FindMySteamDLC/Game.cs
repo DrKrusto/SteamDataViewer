@@ -16,7 +16,7 @@ namespace FindMySteamDLC
             get { return String.Format(@"{0}\appcache\librarycache\{1}_icon.jpg", SteamInfo.PathToSteam, this.AppID); }
         }
 
-        public string PathToImage
+        public virtual string PathToImage
         {
             get 
             {

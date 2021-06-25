@@ -21,10 +21,31 @@
             </Style.Triggers>
         </Style>
 
-        <DataTemplate x:Key="DlcListBoxTemplate">
+        <DataTemplate x:Key="SteamDlcListBoxTemplate">
             <Grid>
-                <Image Source="{Binding PathToImage}" HorizontalAlignment="Center" Width="142"/>
+                <Label Content="{Binding Name}"/>
             </Grid>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="DlcListBoxTemplate">
+            <Grid x:Name="grid">
+                <Image x:Name="image" Source="{Binding PathToImage}" HorizontalAlignment="Center" Width="212"/>
+                <Label x:Name="label" Content="{Binding Name}" MaxWidth="{Binding Width, ElementName=image}" FontWeight="Light" FontFamily="Arial" FontSize="11" Foreground="Transparent" Height="{Binding Height, ElementName=image}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="1" BlurRadius="2"/>
+                    </Label.Effect>
+                </Label>
+            </Grid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White" TargetName="label"/>
+                    <Setter Property="Effect" TargetName="image">
+                        <Setter.Value>
+                            <BlurEffect Radius="6"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
         
         <Style x:Key="SteamGamesListBoxItemContainerStyle" TargetType="{x:Type ListBoxItem}">

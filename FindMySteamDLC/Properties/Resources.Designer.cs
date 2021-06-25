@@ -61,6 +61,16 @@ namespace FindMySteamDLC.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap dlcnotdownloaded {
+            get {
+                object obj = ResourceManager.GetObject("dlcnotdownloaded", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Byte[].
         /// </summary>
         public static byte[] unknownimg {

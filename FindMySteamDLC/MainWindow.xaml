@@ -22,7 +22,6 @@
             <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_minimizeWindow" HorizontalAlignment="Right" Height="39" Margin="0,0,39,0" VerticalAlignment="Center" Width="39" MouseDown="MinimizeApplication">
                 <Label Content="_" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="20" FontFamily="Arial Black" Foreground="#FF00F593"/>
             </Grid>
-
         </Grid>
         <Grid HorizontalAlignment="Left" Height="24" Grid.Row="1" VerticalAlignment="Top" Width="251">
             <Grid.Background>
@@ -46,7 +45,7 @@
             </ListBox>
         </Grid>
         <Grid Style="{DynamicResource WindowButtonBarStyle}" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="460" Margin="251,431,0,0" Grid.Row="1">
-            <Label Content="Get other DLC's" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="16" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
+            <Label Content="Get other DLC's" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="16" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0" MouseDown="ShowDlcWindow"/>
         </Grid>
     </Grid>
 </Window>

@@ -7,7 +7,12 @@
     <Authors>DrKrusto</Authors>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
+    <None Remove="Resources\dlcnotdownloaded.png" />
     <None Remove="Resources\unknownimg.png" />
   </ItemGroup>
 
@@ -16,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\dlcnotdownloaded.png" />
     <Resource Include="Resources\unknownimg.png" />
   </ItemGroup>
 
