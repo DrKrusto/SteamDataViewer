@@ -29,9 +29,10 @@ namespace FindMySteamDLC
         public MainWindow()
         {
             InitializeComponent();
-            SteamInfo.InitializeSteamLibrary();
+            SteamInfo.InitializeSteamLibrary(this.grid_loading);
             this.lb_games.ItemsSource = SteamInfo.Games;
             this.lb_games.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
+            this.grid_loading.DataContext = SteamInfo.Loader;
         }
 
         private void MoveWindow(object sender, MouseButtonEventArgs e)
@@ -69,7 +70,7 @@ namespace FindMySteamDLC
             }
         }
 
-        private void SearchGames(object sender, MouseButtonEventArgs e)
+        async private void SearchGames(object sender, MouseButtonEventArgs e)
         {
             VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog() { Description = "Select the Steam directory where your games are located...", SelectedPath = SteamInfo.PathToSteam, UseDescriptionForTitle = true };
             if (openFileDialog.ShowDialog() == true)
@@ -84,7 +85,9 @@ namespace FindMySteamDLC
                         }
                     }
                 }
-                SteamInfo.FetchAllNonInstalledDlc();
+                this.grid_loading.IsEnabled = true;
+                await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
+                this.grid_loading.IsEnabled = false;
             }
         }
     }

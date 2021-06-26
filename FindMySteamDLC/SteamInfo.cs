@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows;
 using Ookii.Dialogs.Wpf;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace FindMySteamDLC
 {
@@ -16,6 +17,7 @@ namespace FindMySteamDLC
     {
         static private string pathToSteam = SteamInfo.FetchSteamRepository();
         static private ObservableCollection<Game> games;
+        static public Loader Loader { get; set; }
 
         static public ObservableCollection<Game> Games
         {
@@ -47,14 +49,17 @@ namespace FindMySteamDLC
                 return key.GetValue("InstallPath").ToString();
         }
 
-        static public void InitializeSteamLibrary()
+        async static public void InitializeSteamLibrary(Grid loadingGrid) //loadingGrid is to show or hide the loading screen!
         {
+            SteamInfo.Loader = new Loader(false);
             SteamInfo.Games = new ObservableCollection<Game>();
             foreach (Game g in SteamInfo.FetchGamesFromSteam(SteamInfo.PathToSteam))
             {
                 SteamInfo.Games.Add(g);
             }
-            SteamInfo.FetchAllNonInstalledDlc();
+            loadingGrid.IsEnabled = true;
+            await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
+            loadingGrid.IsEnabled = false;
         }
 
         static public ICollection<Game> FetchGamesFromSteam(string pathToSteam)
@@ -105,8 +110,9 @@ namespace FindMySteamDLC
             return games;
         }
 
-        static public void FetchNonInstalledDlc(Game game, ProgressDialog progressDialog)
+        static public void FetchNonInstalledDlc(Game game)
         {
+            SteamInfo.Loader.IsLoading = true;
             int indexOfGame = SteamInfo.Games.IndexOf(game);
             List<Dlc> dlcs = new List<Dlc>();
             string json;
@@ -131,29 +137,41 @@ namespace FindMySteamDLC
                                 dlcJson = "Unknown name: " + appid;
                             }
                             dlcJson = dlcJson.Trim('\"');
-                            progressDialog.Description = String.Format("Found {0}", dlcJson);
+                            //progressDialog.Description = String.Format("Found {0}", dlcJson);
                             dlcs.Add(new Dlc() { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
                         }
                     }
                     game.Dlcs.AddRange(dlcs);
                 }
             }
+            SteamInfo.Loader.IsLoading = false;
         }
 
-        static public void FetchAllNonInstalledDlc()
+        async static public Task FetchAllNonInstalledDlc()
         {
-            ProgressDialog progressDialog = new ProgressDialog() { ProgressBarStyle = ProgressBarStyle.None, ShowCancelButton = false };
-            progressDialog.Show();
+            //ProgressDialog progressDialog = new ProgressDialog() { ProgressBarStyle = ProgressBarStyle.None, ShowCancelButton = false };
+            //progressDialog.Show();
             foreach (Game game in SteamInfo.games)
             {
-                progressDialog.Description = "Searching DLC's...";
+                //progressDialog.Description = "Searching DLC's...";
                 if (!game.HasBeenFetchForDlcs)
                 {
-                    progressDialog.Text = game.Name;
-                    SteamInfo.FetchNonInstalledDlc(game, progressDialog);
+                    //progressDialog.Text = game.Name;
+                    SteamInfo.FetchNonInstalledDlc(game);
                     game.HasBeenFetchForDlcs = true;
                 }
             }
+            await Task.Delay(50);
         }
+    }
+
+    public class Loader
+    {
+        public Loader(bool isLoading)
+        {
+            this.IsLoading = isLoading;
+        }
+
+        public bool IsLoading { get; set; }
     }
 }

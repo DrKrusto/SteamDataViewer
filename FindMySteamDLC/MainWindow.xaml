@@ -44,6 +44,20 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </Grid>
+        <Grid x:Name="grid_loading" Background="#BF000000" Grid.RowSpan="2">
+            <Label x:Name="lbl_loading" Content="Loading..." Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Grid.Style>
+                <Style>
+                    <Setter Property="Grid.IsEnabled" Value="False"/>
+                    <Setter Property="Grid.IsHitTestVisible" Value="True"/>
+                    <Style.Triggers>
+                        <Trigger Property="Grid.IsEnabled" Value="False">
+                            <Setter Property="Grid.Opacity" Value="0"/>
+                            <Setter Property="Grid.IsHitTestVisible" Value="False"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
     </Grid>
-    
 </Window>
