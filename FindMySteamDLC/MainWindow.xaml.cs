@@ -90,5 +90,11 @@ namespace FindMySteamDLC
                 this.grid_loading.IsEnabled = false;
             }
         }
+
+        private void ShowSteamPageForDlc(object sender, MouseButtonEventArgs e)
+        {
+            Dlc selectedDlc = (Dlc)this.lb_dlcs.SelectedItem;
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = String.Format("https://store.steampowered.com/app/{0}", selectedDlc.AppID), UseShellExecute = true });
+        }
     }
 }

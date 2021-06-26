@@ -36,7 +36,7 @@
             <Label Content="Where are my games?" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
         </Grid>
         <Grid Grid.Row="1" Margin="251,215,0,0">
-            <ListBox ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <ListBox ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" MouseDoubleClick="ShowSteamPageForDlc">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True" Orientation="Horizontal" Width="456"/>
@@ -44,16 +44,18 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </Grid>
-        <Grid x:Name="grid_loading" Background="#BF000000" Grid.RowSpan="2">
+        <Grid x:Name="grid_loading" Background="#BF000000" Grid.RowSpan="2" >
             <Label x:Name="lbl_loading" Content="Loading..." Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <Grid.Style>
                 <Style>
                     <Setter Property="Grid.IsEnabled" Value="False"/>
                     <Setter Property="Grid.IsHitTestVisible" Value="True"/>
+                    <Setter Property="Panel.ZIndex" Value="1"/>
                     <Style.Triggers>
                         <Trigger Property="Grid.IsEnabled" Value="False">
                             <Setter Property="Grid.Opacity" Value="0"/>
                             <Setter Property="Grid.IsHitTestVisible" Value="False"/>
+                            <Setter Property="Panel.ZIndex" Value="-1"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
