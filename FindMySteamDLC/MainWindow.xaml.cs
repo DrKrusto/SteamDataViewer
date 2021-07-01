@@ -29,10 +29,10 @@ namespace FindMySteamDLC
         public MainWindow()
         {
             InitializeComponent();
+            SQLiteHandler.InitializeSQLite("steaminfo.sqlite");
             SteamInfo.InitializeSteamLibrary(this.grid_loading);
             this.lb_games.ItemsSource = SteamInfo.Games;
             this.lb_games.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
-            this.grid_loading.DataContext = SteamInfo.Loader;
         }
 
         private void MoveWindow(object sender, MouseButtonEventArgs e)
@@ -77,17 +77,18 @@ namespace FindMySteamDLC
             {
                 if (Directory.Exists(String.Format(@"{0}\steamapps", openFileDialog.SelectedPath)))
                 {
-                    foreach (Game g in SteamInfo.FetchGamesFromSteam(openFileDialog.SelectedPath))
+                    this.grid_loading.IsEnabled = true;
+                    ICollection<Game> allGames = await Task.Run(() => SteamInfo.FetchGamesFromSteam(openFileDialog.SelectedPath));
+                    foreach (Game g in allGames)
                     {
                         if (!SteamInfo.Games.Any(i => i.AppID == g.AppID))
                         {
                             SteamInfo.Games.Add(g);
                         }
                     }
+                    this.grid_loading.IsEnabled = false;
                 }
-                this.grid_loading.IsEnabled = true;
-                await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
-                this.grid_loading.IsEnabled = false;
+                //await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
             }
         }
 

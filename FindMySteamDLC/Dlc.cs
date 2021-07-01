@@ -8,7 +8,15 @@ namespace FindMySteamDLC
     public class Dlc : Game
     {
         public Game FromTheGame { get; set; }
-        public bool IsInstalled { get; set; }
+
+        public Dlc(Game fromTheGame)
+        {
+            this.Name = "null";
+            this.AppID = -1;
+            this.Dlcs = new List<Dlc>();
+            this.HasBeenFetchForDlcs = false;
+            this.FromTheGame = fromTheGame;
+        }
 
         public override string PathToImage
         {

@@ -11,6 +11,16 @@ namespace FindMySteamDLC
         public int AppID { get; set; }
         public List<Dlc> Dlcs { get; set; }
         public bool HasBeenFetchForDlcs { get; set; }
+        public bool IsInstalled { get; set; }
+
+        public Game()
+        {
+            this.Name = "null";
+            this.AppID = -1;
+            this.Dlcs = new List<Dlc>();
+            this.HasBeenFetchForDlcs = false;
+            this.IsInstalled = false;
+        }
 
         public string PathToIcon
         {

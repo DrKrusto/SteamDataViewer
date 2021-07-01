@@ -8,7 +8,25 @@
         <DataTemplate x:Key="SteamGamesListBoxTemplate">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Image Source="{Binding PathToIcon}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="20" Width="20" Margin="20,0,0,0"/>
-                <Label Content="{Binding Name}" Foreground="#FFE9EEF6" FontFamily="Arial" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40,0,0,0"/>
+                <Label x:Name="label" Content="{Binding Name}" FontFamily="Arial" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40,0,0,0">
+                    <Label.Style>
+                        <Style>
+                            <Setter Property="Label.Foreground" Value="#FFE9EEF6"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                    <Setter Property="Label.Foreground" Value="#9CA3B2"/>
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsInstalled}" Value="False"/>
+                                        <Condition Binding="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Label.Foreground" Value="#BFC7D3"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
             </Grid>
         </DataTemplate>
 
