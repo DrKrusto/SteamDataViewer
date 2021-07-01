@@ -22,6 +22,9 @@
             <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_minimizeWindow" HorizontalAlignment="Right" Height="39" Margin="0,0,39,0" VerticalAlignment="Center" Width="39" MouseDown="MinimizeApplication">
                 <Label Content="_" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="20" FontFamily="Arial Black" Foreground="#FF00F593"/>
             </Grid>
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_updateDlc" HorizontalAlignment="Left" Height="39" VerticalAlignment="Center" Width="120" MouseDown="SearchDlcs" Margin="135,0,0,0">
+                <Label Content="Update all the DLCs" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
+            </Grid>
         </Grid>
         <Grid HorizontalAlignment="Left" Height="24" Grid.Row="1" VerticalAlignment="Top" Width="251">
             <Grid.Background>

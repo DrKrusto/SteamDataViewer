@@ -117,5 +117,12 @@ namespace FindMySteamDLC
                 this.grid_loading.IsEnabled = false;
             }
         }
+
+        async private void SearchDlcs(object sender, MouseButtonEventArgs e)
+        {
+            this.grid_loading.IsEnabled = true;
+            await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
+            this.grid_loading.IsEnabled = false;
+        }
     }
 }

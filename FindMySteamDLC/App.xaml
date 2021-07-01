@@ -19,7 +19,7 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsInstalled}" Value="False"/>
-                                        <Condition Binding="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Value="True"/>
+                                        <Condition Binding="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Label.Foreground" Value="#BFC7D3"/>
                                 </MultiDataTrigger>

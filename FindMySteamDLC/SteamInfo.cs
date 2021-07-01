@@ -158,6 +158,11 @@ namespace FindMySteamDLC
                             }
                             dlcJson = dlcJson.Trim('\"');
                             dlcs.Add(new Dlc(game) { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
+                            if (!File.Exists(String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)))
+                            {
+                                try { wc.DownloadFile(String.Format("http://cdn.akamai.steamstatic.com/steam/apps/{0}/header.jpg", appid), String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)); }
+                                catch (Exception e) { }
+                            }
                         }
                     }
                 }
@@ -208,14 +213,12 @@ namespace FindMySteamDLC
         {
             foreach (Game game in SteamInfo.games)
             {
-                if (!game.HasBeenFetchForDlcs)
-                {
-                    List<Dlc> dlcs = await SteamInfo.FetchNonInstalledDlc(game);
-                    game.Dlcs.AddRange(dlcs);
-                    game.HasBeenFetchForDlcs = true;
-                }
+                List<Dlc> dlcs = await Task.Run(()=> SteamInfo.FetchNonInstalledDlc(game));
+                game.Dlcs.AddRange(dlcs);
             }
-            await Task.Delay(50);
+            List<Game> games = new List<Game>();
+            games.AddRange(SteamInfo.games);
+            SQLiteHandler.InsertGames(games);
         }
     }
 }
