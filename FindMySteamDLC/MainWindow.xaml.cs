@@ -26,13 +26,17 @@ namespace FindMySteamDLC
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<string> directories;
+
         public MainWindow()
         {
             InitializeComponent();
             SQLiteHandler.InitializeSQLite("steaminfo.sqlite");
-            SteamInfo.InitializeSteamLibrary(this.grid_loading);
+            this.directories = SQLiteHandler.FetchAllDirectories();
+            SteamInfo.InitializeSteamLibrary(this.grid_loading, this.directories);
             this.lb_games.ItemsSource = SteamInfo.Games;
             this.lb_games.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
+            SeekGamesFromDirectories(this.directories);
         }
 
         private void MoveWindow(object sender, MouseButtonEventArgs e)
@@ -70,25 +74,16 @@ namespace FindMySteamDLC
             }
         }
 
-        async private void SearchGames(object sender, MouseButtonEventArgs e)
+        private void SearchGames(object sender, MouseButtonEventArgs e)
         {
             VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog() { Description = "Select the Steam directory where your games are located...", SelectedPath = SteamInfo.PathToSteam, UseDescriptionForTitle = true };
             if (openFileDialog.ShowDialog() == true)
             {
-                if (Directory.Exists(String.Format(@"{0}\steamapps", openFileDialog.SelectedPath)))
+                AddGamesFromDirectory(openFileDialog.SelectedPath);
+                if (!SQLiteHandler.VerifyIfDirectoryExists(openFileDialog.SelectedPath))
                 {
-                    this.grid_loading.IsEnabled = true;
-                    ICollection<Game> allGames = await Task.Run(() => SteamInfo.FetchGamesFromSteam(openFileDialog.SelectedPath));
-                    foreach (Game g in allGames)
-                    {
-                        if (!SteamInfo.Games.Any(i => i.AppID == g.AppID))
-                        {
-                            SteamInfo.Games.Add(g);
-                        }
-                    }
-                    this.grid_loading.IsEnabled = false;
+                    SQLiteHandler.InsertNewDirectoryPath(openFileDialog.SelectedPath);
                 }
-                //await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
             }
         }
 
@@ -96,6 +91,31 @@ namespace FindMySteamDLC
         {
             Dlc selectedDlc = (Dlc)this.lb_dlcs.SelectedItem;
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = String.Format("https://store.steampowered.com/app/{0}", selectedDlc.AppID), UseShellExecute = true });
+        }
+
+        private void SeekGamesFromDirectories(List<string> directories)
+        {
+            foreach (string s in directories)
+            {
+                AddGamesFromDirectory(s);
+            }
+        }
+
+        async private void AddGamesFromDirectory(string pathToDirectory)
+        {
+            if (Directory.Exists(String.Format(@"{0}\steamapps", pathToDirectory)))
+            {
+                this.grid_loading.IsEnabled = true;
+                ICollection<Game> allGames = await Task.Run(() => SteamInfo.FetchGamesFromSteam(pathToDirectory));
+                foreach (Game g in allGames)
+                {
+                    if (!SteamInfo.Games.Any(i => i.AppID == g.AppID))
+                    {
+                        SteamInfo.Games.Add(g);
+                    }
+                }
+                this.grid_loading.IsEnabled = false;
+            }
         }
     }
 }

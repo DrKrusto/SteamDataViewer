@@ -48,7 +48,7 @@ namespace FindMySteamDLC
                 return key.GetValue("InstallPath").ToString();
         }
 
-        async static public void InitializeSteamLibrary(Grid loadingGrid) //loadingGrid is to show or hide the loading screen!
+        async static public void InitializeSteamLibrary(Grid loadingGrid, List<string> directories) //loadingGrid is to show or hide the loading screen!
         {
             SteamInfo.Games = new ObservableCollection<Game>();
             loadingGrid.IsEnabled = true;

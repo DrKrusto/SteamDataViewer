@@ -31,10 +31,13 @@ namespace FindMySteamDLC
             cnx.Open();
             string queryCreateGameTable = "CREATE TABLE games (appid INT PRIMARY KEY, name VARCHAR(100))";
             string queryCreateDlcTable = "CREATE TABLE dlcs (appid INT PRIMARY KEY, name VARCHAR(100), gameappid INT, FOREIGN KEY (gameappid) REFERENCES games (appid))";
+            string queryCreateDirectoryTable = "CREATE TABLE directories (pathtodirectory VARCHAR(500))";
             SQLiteCommand createGameTable = new SQLiteCommand(queryCreateGameTable, cnx);
             SQLiteCommand createDlcTable = new SQLiteCommand(queryCreateDlcTable, cnx);
+            SQLiteCommand createDirectoryTable = new SQLiteCommand(queryCreateDirectoryTable, cnx);
             createGameTable.ExecuteNonQuery();
             createDlcTable.ExecuteNonQuery();
+            createDirectoryTable.ExecuteNonQuery();
             cnx.Close();
         }
 
@@ -97,6 +100,53 @@ namespace FindMySteamDLC
                 }
             }
             cnx.Close();
+        }
+
+        static public List<string> FetchAllDirectories()
+        {
+            List<string> directories = new List<string>();
+            cnx.Open();
+            string queryFetchDirectories = "SELECT pathtodirectory FROM directories";
+            SQLiteCommand fetchDirectories = new SQLiteCommand(queryFetchDirectories, cnx);
+            SQLiteDataReader reader = fetchDirectories.ExecuteReader();
+            while (reader.Read())
+            {
+                directories.Add(reader.GetString(0));
+            }
+            reader.Close();
+            cnx.Close();
+            return directories;
+        }
+
+        static public void InsertNewDirectoryPath(string path)
+        {
+            cnx.Open();
+            string queryInsertDirectoryPath = "INSERT INTO directories(pathtodirectory) VALUES(@path)";
+            SQLiteCommand insertDirectoryPath = new SQLiteCommand(queryInsertDirectoryPath, cnx);
+            insertDirectoryPath.Parameters.AddWithValue("@path", path);
+            insertDirectoryPath.ExecuteNonQuery();
+            cnx.Close();
+        }
+
+        static public bool VerifyIfDirectoryExists(string pathToDirectory)
+        {
+            cnx.Open();
+            string querySelectDirectoryPath = "SELECT pathtodirectory FROM directories WHERE pathtodirectory = @path";
+            SQLiteCommand selectDirectoryPath = new SQLiteCommand(querySelectDirectoryPath, cnx);
+            selectDirectoryPath.Parameters.AddWithValue("@path", pathToDirectory);
+            SQLiteDataReader reader = selectDirectoryPath.ExecuteReader();
+            if (reader.Read())
+            {
+                reader.Close();
+                cnx.Close();
+                return true;
+            }
+            else
+            {
+                reader.Close();
+                cnx.Close();
+                return false;
+            }
         }
 
         static private bool VerifyIfGameExists(Game game)

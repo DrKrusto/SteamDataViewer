@@ -1,17 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FindMySteamDLC
 {
-    public class Game
+    public class Game : INotifyPropertyChanged
     {
+        private bool isInstalled;
+
         public string Name { get; set; }
         public int AppID { get; set; }
         public List<Dlc> Dlcs { get; set; }
         public bool HasBeenFetchForDlcs { get; set; }
-        public bool IsInstalled { get; set; }
+        public bool IsInstalled 
+        {
+            get { return this.isInstalled; }
+            set {
+                this.isInstalled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Game()
         {
@@ -37,6 +50,11 @@ namespace FindMySteamDLC
                 else
                     return "pack://application:,,,/Resources/unknownimg.png";
             }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string isInstalled = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(isInstalled));
         }
     }
 }
