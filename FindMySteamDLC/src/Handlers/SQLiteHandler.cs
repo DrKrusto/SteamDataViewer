@@ -59,7 +59,12 @@ namespace FindMySteamDLC.Handlers
                 SQLiteDataReader innerReader = fetchDlcs.ExecuteReader();
                 while (innerReader.Read())
                 {
-                    game.Dlcs.Add(new Dlc(game) { AppID = innerReader.GetInt32(0), Name = innerReader.GetString(1) });
+                    Dlc dlc = new Dlc(game) 
+                    { 
+                        AppID = innerReader.GetInt32(0), 
+                        Name = innerReader.GetString(1) 
+                    };
+                    game.Dlcs.Add(dlc.AppID, dlc);
                 }
                 games.Add(game);
                 innerReader.Close();
@@ -69,7 +74,7 @@ namespace FindMySteamDLC.Handlers
             return games;
         }
 
-        static public void InsertGames(List<Game> games)
+        static public void InsertGames(ICollection<Game> games)
         {
             cnx.Open();
             string queryInsertGames =
@@ -91,13 +96,16 @@ namespace FindMySteamDLC.Handlers
                 insertGames.Parameters["@name"].Value = game.Name;
                 if (!VerifyIfGameExists(game))
                     insertGames.ExecuteNonQuery();
-                foreach (Dlc dlc in game.Dlcs)
+                foreach (KeyValuePair<int, Dlc> dlc in game.Dlcs)
                 {
-                    insertDlcs.Parameters["@appid"].Value = dlc.AppID;
-                    insertDlcs.Parameters["@name"].Value = dlc.Name;
-                    insertDlcs.Parameters["@gameappid"].Value = game.AppID;
-                    if(!VerifyIfDlcExists(dlc))
-                        insertDlcs.ExecuteNonQuery();
+                    if (dlc.Value.Name != "null")
+                    {
+                        insertDlcs.Parameters["@appid"].Value = dlc.Key;
+                        insertDlcs.Parameters["@name"].Value = dlc.Value.Name;
+                        insertDlcs.Parameters["@gameappid"].Value = game.AppID;
+                        if (!VerifyIfDlcExists(dlc.Value))
+                            insertDlcs.ExecuteNonQuery();
+                    }
                 }
             }
             cnx.Close();

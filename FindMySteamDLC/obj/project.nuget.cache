@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "PozCMdHlcchXLiZpmTxQ4O6Wr0YcuxB23eE3d7o4q630JJrcrf5uoq+mwAOm1BMCw9L0A34CXfhLT7GyP13/9w==",
+  "dgSpecHash": "MO0756y8dUGEVvpPp/aua4V3M4WDyn2E/j0u8brb2+ECCc9G60xnCpHh8nDn7DiHeg/GSuUt6ciq1Vr6hOgtbQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\33632\\source\\repos\\FMS\\FindMySteamDLC\\FindMySteamDLC\\FindMySteamDLC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\33632\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
+    "C:\\Users\\33632\\.nuget\\packages\\htmlagilitypack\\1.11.38\\htmlagilitypack.1.11.38.nupkg.sha512",
     "C:\\Users\\33632\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\33632\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\33632\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",

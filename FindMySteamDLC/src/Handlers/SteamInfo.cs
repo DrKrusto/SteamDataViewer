@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Windows;
-using Ookii.Dialogs.Wpf;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using FindMySteamDLC.Models;
+using System.Text.Json;
+using HtmlAgilityPack;
 
 namespace FindMySteamDLC.Handlers
 {
@@ -57,19 +57,17 @@ namespace FindMySteamDLC.Handlers
             {
                 SteamInfo.Games.Add(g);
             }
-            ICollection<Game> allGames = await Task.Run(()=> SteamInfo.FetchGamesFromSteam(SteamInfo.PathToSteam));
-            foreach (Game g in allGames)
+            foreach (Game g in await Task.Run(()=> SteamInfo.FetchGamesFromSteamFiles(SteamInfo.PathToSteam)))
             {
                 SteamInfo.Games.Add(g);
             }
             loadingGrid.IsEnabled = false;
         }
 
-        async static public Task<ICollection<Game>> FetchGamesFromSteam(string pathToSteam)
+        async static public Task<ICollection<Game>> FetchGamesFromSteamFiles(string pathToSteam)
         {
-            List<Game> games = new List<Game>();
-            games.AddRange(SteamInfo.Games);
-            List<Game> foundGames = new List<Game>();
+            List<Game> games = new List<Game>(SteamInfo.Games);
+            List<Game> foundGames = new List<Game>();            
             foreach (string s in Directory.EnumerateFiles(pathToSteam + "\\steamapps"))
             {
                 if (s.Contains(".acf"))
@@ -99,21 +97,19 @@ namespace FindMySteamDLC.Handlers
                                         if (line.Contains("\"dlcappid\""))
                                         {
                                             int dlcAppID = Convert.ToInt32(line.Split('"')[3].Trim());
-                                            string json;
-                                            using (WebClient wc = new WebClient())
+                                            Dlc dlc = new Dlc(game)
                                             {
-                                                json = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + dlcAppID).Trim(new char[] { '{', '}' });
-                                                json = json.Split(',')[1];
-                                                json = json.Split(':')[1];
-                                                json = json.Trim('\"');
-                                            }
-                                            game.Dlcs.Add(new Dlc(game) { AppID = dlcAppID, IsInstalled = true, Name = json });
+                                                AppID = dlcAppID,
+                                                IsInstalled = true,
+                                            };
+                                            game.Dlcs.Add(dlcAppID, dlc);
                                         }
                                     }
                                 }
                             }
+                            SteamInfo.FetchDlcs(game);
                             foundGames.Add(game);
-                            game.Dlcs.AddRange(await Task.Run(() => SteamInfo.FetchNonInstalledDlc(game, foundGames)));
+                            //await Task.Run(() => SteamInfo.FetchNonInstalledDlc(game, foundGames));
                         }
                     }
                     else
@@ -132,94 +128,87 @@ namespace FindMySteamDLC.Handlers
             return await Task.FromResult(foundGames);
         }
 
-        async static public Task<List<Dlc>> FetchNonInstalledDlc(Game game)
+        static public bool FetchDlcs(Game game)
         {
-            int indexOfGame = SteamInfo.Games.IndexOf(game);
-            List<Dlc> dlcs = new List<Dlc>();
-            string json;
-            using (WebClient wc = new WebClient())
+            string json = String.Empty, html = String.Empty, fixedName = String.Empty, url = String.Format("https://store.steampowered.com/dlc/{0}/", game.AppID);
+            HtmlWeb htmlWeb = new HtmlWeb();
+            try
             {
-                json = wc.DownloadString("http://store.steampowered.com/api/appdetails/?appids=" + game.AppID);
-                if (json.Contains("\"dlc\""))
+                fixedName = htmlWeb.Load(url)
+                    .DocumentNode
+                    .SelectSingleNode("//div[contains(concat(' ', normalize-space(@class), ' '), ' curator_avatar_image ')]/a")
+                    .Attributes["href"].Value
+                    .Split('/')[5];
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("This game is not found in the steam site. Exception: " + e);
+                return false;
+            }
+            url += String.Format("{0}/{1}", fixedName, "ajaxgetfilteredrecommendations");
+            using (WebClient client = new WebClient())
+            {
+                json = client.DownloadString(url);
+                using (JsonDocument document = JsonDocument.Parse(json))
                 {
-                    json = json.Remove(0, json.IndexOf("\"dlc\"")).Split('[', ']')[1];
-                    foreach (string appid in json.Split(','))
+                    html = document.RootElement.GetProperty("results_html").GetString();
+                }
+            }
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            HtmlNodeCollection dlcNodes = htmlDoc.DocumentNode
+                .SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' recommendation ')]");
+            if (dlcNodes != null)
+            {
+                foreach (HtmlNode node in dlcNodes)
+                {
+                    int appid = Convert.ToInt32(node
+                        .SelectSingleNode("div/a")
+                        .Attributes["data-ds-appid"].Value);
+                    string dlcName = node
+                        .SelectSingleNode("a/div/div[1]/div/span[1]")
+                        .InnerText;
+                    if (game.Dlcs.ContainsKey(appid))
                     {
-                        if (!SteamInfo.Games[indexOfGame].Dlcs.Exists(i => i.AppID == Convert.ToInt32(appid)))
+                        game.Dlcs[appid].Name = dlcName;
+                    }
+                    else
+                    {
+                        Dlc dlc = new Dlc(game)
                         {
-                            string dlcJson = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + appid);
-                            dlcJson = dlcJson.Split(',')[1];
-                            try
-                            {
-                                dlcJson = dlcJson.Split('\"')[3];
+                            Name = dlcName,
+                            AppID = appid,
+                            IsInstalled = false
+                        };
+                        game.Dlcs.Add(appid, dlc);
+                    }
+                    if (!File.Exists(String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)))
+                    {
+                        using (WebClient client = new WebClient())
+                        {
+                            try 
+                            { 
+                                client.DownloadFile(String.Format("http://cdn.akamai.steamstatic.com/steam/apps/{0}/header.jpg", appid), String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)); 
                             }
-                            catch
+                            catch (Exception e) 
                             {
-                                dlcJson = "Unknown name: " + appid;
-                            }
-                            dlcJson = dlcJson.Trim('\"');
-                            dlcs.Add(new Dlc(game) { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
-                            if (!File.Exists(String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)))
-                            {
-                                try { wc.DownloadFile(String.Format("http://cdn.akamai.steamstatic.com/steam/apps/{0}/header.jpg", appid), String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)); }
-                                catch (Exception e) { }
+                                Console.WriteLine("Couldn't download the dlc image. Exception: " + e.Message);
                             }
                         }
+                        
                     }
                 }
             }
-            return await Task.FromResult(dlcs);
+            return true;
         }
 
-        async static public Task<List<Dlc>> FetchNonInstalledDlc(Game game, List<Game> theGames)
-        {
-            int indexOfGame = theGames.FindIndex(i => i.AppID == game.AppID);
-            List<Dlc> dlcs = new List<Dlc>();
-            string json;
-            using (WebClient wc = new WebClient())
-            {
-                json = wc.DownloadString("http://store.steampowered.com/api/appdetails/?appids=" + game.AppID);
-                if (json.Contains("\"dlc\""))
-                {
-                    json = json.Remove(0, json.IndexOf("\"dlc\"")).Split('[', ']')[1];
-                    foreach (string appid in json.Split(','))
-                    {
-                        if (!theGames[indexOfGame].Dlcs.Exists(i => i.AppID == Convert.ToInt32(appid)))
-                        {
-                            string dlcJson = wc.DownloadString("https://steamspy.com/api.php?request=appdetails&appid=" + appid);
-                            dlcJson = dlcJson.Split(',')[1];
-                            try
-                            {
-                                dlcJson = dlcJson.Split('\"')[3];
-                            }
-                            catch
-                            {
-                                dlcJson = "Unknown name: " + appid;
-                            }
-                            dlcJson = dlcJson.Trim('\"');
-                            dlcs.Add(new Dlc(game) { AppID = Convert.ToInt32(appid), IsInstalled = false, Name = dlcJson });
-                            if (!File.Exists(String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)))
-                            {
-                                try { wc.DownloadFile(String.Format("http://cdn.akamai.steamstatic.com/steam/apps/{0}/header.jpg", appid), String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, appid)); }
-                                catch (Exception e) { }
-                            }
-                        }
-                    }
-                }
-            }
-            return await Task.FromResult(dlcs);
-        }
-
-        async static public Task FetchAllNonInstalledDlc()
+        static public void FetchAllNonInstalledDlc()
         {
             foreach (Game game in SteamInfo.games)
             {
-                List<Dlc> dlcs = await Task.Run(()=> SteamInfo.FetchNonInstalledDlc(game));
-                game.Dlcs.AddRange(dlcs);
+                SteamInfo.FetchDlcs(game);
             }
-            List<Game> games = new List<Game>();
-            games.AddRange(SteamInfo.games);
-            SQLiteHandler.InsertGames(games);
+            SQLiteHandler.InsertGames(SteamInfo.games);
         }
     }
 }

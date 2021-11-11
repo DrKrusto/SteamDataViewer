@@ -9,6 +9,14 @@ namespace FindMySteamDLC.Models
 {
     public class Game : Media
     {
-        public List<Dlc> Dlcs { get; set; }
+        public Game()
+        {
+            this.Dlcs = new Dictionary<int, Dlc>();
+            this.AppID = -1;
+            this.IsInstalled = false;
+            this.Name = "null";
+        }
+
+        public Dictionary<int, Dlc> Dlcs { get; set; }
     }
 }

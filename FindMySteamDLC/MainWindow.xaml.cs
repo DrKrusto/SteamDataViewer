@@ -18,6 +18,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Ookii.Dialogs.Wpf;
+using FindMySteamDLC.Models;
+using FindMySteamDLC.Handlers;
 
 namespace FindMySteamDLC
 {
@@ -62,15 +64,16 @@ namespace FindMySteamDLC
             if (this.lb_games.SelectedIndex != -1)
             {
                 Game game = (Game)this.lb_games.SelectedItem;
-                if (game.PathToImage == null || !File.Exists(game.PathToImage))
+                this.img_gameImage.Source = new BitmapImage(new Uri(game.PathToImage));
+                List<Dlc> dlcs = new List<Dlc>();
+                foreach (KeyValuePair<int, Dlc> dlc in game.Dlcs)
                 {
-                    this.img_gameImage.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/unknownimg.png"));
+                    if (dlc.Value.Name != "null")
+                    {
+                        dlcs.Add(dlc.Value);
+                    }
                 }
-                else
-                {
-                    this.img_gameImage.Source = new BitmapImage(new Uri(game.PathToImage));
-                }
-                this.lb_dlcs.ItemsSource = game.Dlcs;
+                this.lb_dlcs.ItemsSource = dlcs;
             }
         }
 
@@ -106,14 +109,7 @@ namespace FindMySteamDLC
             if (Directory.Exists(String.Format(@"{0}\steamapps", pathToDirectory)))
             {
                 this.grid_loading.IsEnabled = true;
-                ICollection<Game> allGames = await Task.Run(() => SteamInfo.FetchGamesFromSteam(pathToDirectory));
-                foreach (Game g in allGames)
-                {
-                    if (!SteamInfo.Games.Any(i => i.AppID == g.AppID))
-                    {
-                        SteamInfo.Games.Add(g);
-                    }
-                }
+                await Task.Run(() => SteamInfo.FetchGamesFromSteamFiles(pathToDirectory));
                 this.grid_loading.IsEnabled = false;
             }
         }
