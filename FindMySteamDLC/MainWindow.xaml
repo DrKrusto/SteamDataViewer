@@ -39,7 +39,7 @@
             <Label Content="Where are my games?" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
         </Grid>
         <Grid Grid.Row="1" Margin="251,215,0,0">
-            <ListBox ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" MouseDoubleClick="ShowSteamPageForDlc">
+            <ListBox ItemContainerStyle="{DynamicResource SteamDlcListBoxContainerStyle}" ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" MouseDoubleClick="ShowSteamPageForDlc">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True" Orientation="Horizontal" Width="456"/>
