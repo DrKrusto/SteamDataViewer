@@ -1,5 +1,5 @@
 ﻿FindMySteamDLC
-1.0.0.0
+
 
 winexe
 C#
@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\App.xaml
-11407045341
+3-1483090300
 
-111480244339
+11238558783
 206-711429438
-MainWindow.xaml;
+DlcWindow.xaml;LoadingWindow.xaml;MainWindow.xaml;
 
-False
+True
 

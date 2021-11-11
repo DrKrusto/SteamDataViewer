@@ -1,0 +1,7 @@
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\FindMySteamDLC.csproj.AssemblyReference.cache
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\DlcWindow.g.cs
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\LoadingWindow.g.cs
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\MainWindow.g.cs
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\App.g.cs
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\FindMySteamDLC_MarkupCompile.cache
+C:\Users\33632\source\repos\FMS\FindMySteamDLC\FindMySteamDLC\obj\Debug\netcoreapp3.1\FindMySteamDLC_MarkupCompile.lref
