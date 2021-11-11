@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using FindMySteamDLC.Handlers;
 
-namespace FindMySteamDLC
+namespace FindMySteamDLC.Models
 {
     public class Game : INotifyPropertyChanged
     {

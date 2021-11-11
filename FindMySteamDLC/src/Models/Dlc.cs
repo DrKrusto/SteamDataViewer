@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using FindMySteamDLC.Handlers;
 
-namespace FindMySteamDLC
+namespace FindMySteamDLC.Models
 {
     public class Dlc : Game
     {

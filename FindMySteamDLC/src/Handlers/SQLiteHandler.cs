@@ -4,8 +4,9 @@ using System.Data.SQLite;
 using System.IO;
 using System.Text;
 using System.Data;
+using FindMySteamDLC.Models;
 
-namespace FindMySteamDLC
+namespace FindMySteamDLC.Handlers
 {
     static public class SQLiteHandler
     {

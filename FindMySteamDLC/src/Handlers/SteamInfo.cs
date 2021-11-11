@@ -10,8 +10,9 @@ using System.Windows;
 using Ookii.Dialogs.Wpf;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using FindMySteamDLC.Models;
 
-namespace FindMySteamDLC
+namespace FindMySteamDLC.Handlers
 {
     static public class SteamInfo
     {
