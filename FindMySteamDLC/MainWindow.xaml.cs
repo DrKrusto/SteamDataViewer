@@ -130,5 +130,11 @@ namespace FindMySteamDLC
             await Task.Run(()=> SteamInfo.FetchAllNonInstalledDlc());
             this.grid_loading.IsEnabled = false;
         }
+
+        private void AddGame(object sender, MouseButtonEventArgs e)
+        {
+            SearchGamesWindow searchGamesWindow = new SearchGamesWindow();
+            searchGamesWindow.Show();
+        }
     }
 }

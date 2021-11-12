@@ -32,11 +32,14 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Label Content="ALL GAMES" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" Foreground="#FFCAE4FB" Margin="20,0,0,0" Padding="0,0,5,0" FontWeight="Normal" FontSize="12" />
-            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_updateDlc" HorizontalAlignment="Right" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchDlcs" Margin="196,0,0,0">
-                <Label Content="&#xe72c;" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal" Foreground="#FFCAE4FB"/>
+            <Grid x:Name="btn_updateDlc" HorizontalAlignment="Right" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchDlcs" Margin="196,0,0,0">
+                <Label Content="&#xe72c;" Cursor="Hand" Style="{DynamicResource GameMenuButtonStyle}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal"/>
             </Grid>
-            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_searchGames" HorizontalAlignment="Left" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchGames" Margin="203,0,0,0">
-                <Label Content="&#xe8f4;" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal" Foreground="#FFCAE4FB"/>
+            <Grid x:Name="btn_searchGames" HorizontalAlignment="Right" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchGames" Margin="203,0,24,0">
+                <Label Content="&#xe8f4;" Cursor="Hand" Style="{DynamicResource GameMenuButtonStyle}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal"/>
+            </Grid>
+            <Grid x:Name="btn_addGame" HorizontalAlignment="Right" Height="24" VerticalAlignment="Center" Width="24" Margin="179,0,48,0" MouseDown="AddGame">
+                <Label Content="&#xE710;" Cursor="Hand" Style="{DynamicResource GameMenuButtonStyle}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Margin="251,215,0,0">
