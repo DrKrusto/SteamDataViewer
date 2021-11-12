@@ -8,22 +8,20 @@
         Title="MainWindow" Height="504" Width="711" ResizeMode="NoResize" WindowStyle="None">
     <Grid Background="#FF2C323B">
         <Grid.RowDefinitions>
-            <RowDefinition Height="39"/>
+            <RowDefinition Height="24"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="0,0,0,1" BorderBrush="#FF24282F" HorizontalAlignment="Right" Height="215" Margin="0,0,0,0" VerticalAlignment="Top" Width="460" Grid.Row="1">
-            <Image x:Name="img_gameImage" Stretch="Fill" Source="/Resources/unknownimg.png"/>
+        <Border BorderThickness="0,0,0,0" BorderBrush="#FF24282F" HorizontalAlignment="Right" Height="215" Margin="0,0,0,0" VerticalAlignment="Top" Width="460" Grid.Row="1">
+            <Image x:Name="img_gameImage" Stretch="Fill" Source="/Resources/unknownimg.png" Opacity="0"/>
         </Border>
         <ListBox HorizontalContentAlignment="Stretch" ItemContainerStyle="{DynamicResource SteamGamesListBoxItemContainerStyle}" ItemTemplate="{DynamicResource SteamGamesListBoxTemplate}" x:Name="lb_games" Margin="0,24,460,0"  BorderBrush="{x:Null}" FontFamily="Arial" BorderThickness="0,0,0,0" Background="#FF24282F" Foreground="#FFE9EEF6" Padding="-1,-1,-1,-1" Grid.Row="1" SelectionChanged="SelectionChanged" AutomationProperties.IsOffscreenBehavior="Offscreen" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF1C1B22" MouseDown="MoveWindow">
-            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_quitWindow" HorizontalAlignment="Right" Height="39" Margin="0,0,0,0" VerticalAlignment="Center" Width="39" MouseDown="ExitApplication">
-                <Label Content="r" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="20" FontFamily="Webdings" Foreground="#FF00F593"/>
+        <Grid Background="#FF1C1B22" MouseDown="MoveWindow">
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_quitWindow" HorizontalAlignment="Left" Height="24" Margin="677,0,0,0" VerticalAlignment="Center" Width="34" MouseDown="ExitApplication">
+                <Label Content="&#xe8bb;" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="#FF00F593" FontSize="8"/>
             </Grid>
-            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_minimizeWindow" HorizontalAlignment="Right" Height="39" Margin="0,0,39,0" VerticalAlignment="Center" Width="39" MouseDown="MinimizeApplication">
-                <Label Content="_" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="20" FontFamily="Arial Black" Foreground="#FF00F593"/>
-            </Grid>
-            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_updateDlc" HorizontalAlignment="Left" Height="39" VerticalAlignment="Center" Width="120" MouseDown="SearchDlcs" Margin="135,0,0,0">
-                <Label Content="Update all the DLCs" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_minimizeWindow" HorizontalAlignment="Left" Height="24" Margin="643,0,0,0" VerticalAlignment="Center" Width="34
+                  " MouseDown="MinimizeApplication">
+                <Label Content="&#xe921;" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="#FF00F593" FontSize="8" Margin="0,11,0,0"/>
             </Grid>
         </Grid>
         <Grid HorizontalAlignment="Left" Height="24" Grid.Row="1" VerticalAlignment="Top" Width="251">
@@ -33,12 +31,16 @@
                     <GradientStop Color="#FF242830" Offset="0.995"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <Label Content="ALL GAMES INSTALLED" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" Foreground="#FFCAE4FB" Margin="20,0,0,0" Padding="0,0,5,0" FontWeight="Normal" FontSize="13"/>
-        </Grid>
-        <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_searchGames" HorizontalAlignment="Left" Height="39" VerticalAlignment="Center" Width="135" MouseDown="SearchGames">
-            <Label Content="Where are my games?" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontSize="11" FontFamily="Arial" Foreground="#FF00F593" Margin="0,0,0,0"/>
+            <Label Content="ALL GAMES" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" Foreground="#FFCAE4FB" Margin="20,0,0,0" Padding="0,0,5,0" FontWeight="Normal" FontSize="12" />
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_updateDlc" HorizontalAlignment="Right" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchDlcs" Margin="196,0,0,0">
+                <Label Content="&#xe72c;" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal" Foreground="#FFCAE4FB"/>
+            </Grid>
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_searchGames" HorizontalAlignment="Left" Height="24" VerticalAlignment="Center" Width="24" MouseDown="SearchGames" Margin="203,0,0,0">
+                <Label Content="&#xe8f4;" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontWeight="Normal" Foreground="#FFCAE4FB"/>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1" Margin="251,215,0,0">
+            <Label x:Name="label_dlcnotfound" FontFamily="Arial" Content="No DLCs were found for this game..." HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Opacity="0" Foreground="#FFCAE4FB"/>
             <ListBox ItemContainerStyle="{DynamicResource SteamDlcListBoxContainerStyle}" ItemTemplate="{DynamicResource DlcListBoxTemplate}" x:Name="lb_dlcs" Background="Transparent" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" MouseDoubleClick="ShowSteamPageForDlc">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>

@@ -61,8 +61,10 @@ namespace FindMySteamDLC
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            this.label_dlcnotfound.Opacity = 0;
             if (this.lb_games.SelectedIndex != -1)
             {
+                this.img_gameImage.Opacity = 100;
                 Game game = (Game)this.lb_games.SelectedItem;
                 this.img_gameImage.Source = new BitmapImage(new Uri(game.PathToImage));
                 List<Dlc> dlcs = new List<Dlc>();
@@ -74,6 +76,14 @@ namespace FindMySteamDLC
                     }
                 }
                 this.lb_dlcs.ItemsSource = dlcs;
+                if (dlcs.Count == 0)
+                {
+                    this.label_dlcnotfound.Opacity = 100;
+                }
+            }
+            else
+            {
+                this.img_gameImage.Opacity = 0;
             }
         }
 
