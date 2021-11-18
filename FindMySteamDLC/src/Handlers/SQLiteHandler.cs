@@ -111,6 +111,36 @@ namespace FindMySteamDLC.Handlers
             cnx.Close();
         }
 
+        static public void InsertGame(Game game)
+        {
+            cnx.Open();
+            string queryInsertGame =
+                "INSERT INTO games(appid, name)" +
+                "VALUES (@appid, @name)";
+            string queryInsertDlcs =
+                "INSERT INTO dlcs(appid, name, gameappid)" +
+                "VALUES (@appid, @name, @gameappid)";
+            SQLiteCommand insertGame = new SQLiteCommand(queryInsertGame, cnx);
+            SQLiteCommand insertDlcs = new SQLiteCommand(queryInsertDlcs, cnx);
+            insertGame.Parameters.AddWithValue("@appid", game.AppID);
+            insertGame.Parameters.AddWithValue("@name", game.Name);
+            insertDlcs.Parameters.Add("@appid", DbType.Int32);
+            insertDlcs.Parameters.Add("@name", DbType.String);
+            insertDlcs.Parameters.Add("@gameappid", DbType.Int32);
+            insertGame.ExecuteNonQuery();
+            foreach (KeyValuePair<int, Dlc> dlc in game.Dlcs)
+            {
+                if (!VerifyIfDlcExists(dlc.Value))
+                {
+                    insertDlcs.Parameters["@appid"].Value = dlc.Key;
+                    insertDlcs.Parameters["@name"].Value = dlc.Value.Name;
+                    insertDlcs.Parameters["@gameappid"].Value = game.AppID;
+                    insertDlcs.ExecuteNonQuery();
+                }
+            }
+            cnx.Close();
+        }
+
         static public List<string> FetchAllDirectories()
         {
             List<string> directories = new List<string>();

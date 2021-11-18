@@ -5,37 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FindMySteamDLC"
         mc:Ignorable="d"
-        Title="SearchGamesWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox x:Name="tb_gameName" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
-        <ListBox x:Name="lb_foundGames" Margin="0,40,0,0" ItemContainerStyle="{DynamicResource SteamGamesListBoxItemContainerStyle}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Label x:Name="label" Content="{Binding Name}" FontFamily="Arial" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40,0,0,0">
-                            <Label.Style>
-                                <Style>
-                                    <Setter Property="Label.Foreground" Value="#FFE9EEF6"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsInstalled}" Value="False">
-                                            <Setter Property="Label.Foreground" Value="#9CA3B2"/>
-                                        </DataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsInstalled}" Value="False"/>
-                                                <Condition Binding="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}" Value="True"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Label.Foreground" Value="#BFC7D3"/>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="229,10,0,0" VerticalAlignment="Top" Height="18" Width="72" Click="Button_Click"/>
-
+        Title="SearchGamesWindow" Height="450" Width="800" Background="#FF1C1B22">
+    <Grid Background="#FF2C323B">
+        <Grid Height="33" VerticalAlignment="Top">
+            <Button Style="{DynamicResource SteamButton}" Content="Search" HorizontalAlignment="Left" Margin="229,0,0,0" VerticalAlignment="Center" Height="20" Width="72" Click="Button_Click"/>
+            <TextBox x:Name="tb_gameName" Style="{DynamicResource SteamTextBox}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="214" TextWrapping="Wrap" Background="{x:Null}" SelectionBrush="#FF49566E" Foreground="#FFC8D0DC" SelectionOpacity="0.5" SelectionTextBrush="{x:Null}" CaretBrush="#FFC8D0DC" FontSize="11" FontFamily="Arial" Cursor="IBeam" Padding="3,0,3,0" Margin="10,0,0,0" Height="20" KeyUp="tb_gameName_KeyUp"/>
+            <Label x:Name="img_loadingBuffering" Content="&#xE895;" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Center" Opacity="0" IsHitTestVisible="False" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FFC8D0DC" FontWeight="Normal">
+                <Label.RenderTransform>
+                    <RotateTransform CenterX="12" CenterY="12" />
+                </Label.RenderTransform>
+                <Label.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Label.Opacity" Value="100">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                    Storyboard.TargetProperty="RenderTransform.Angle"
+                                    From="0"
+                                    To="360"
+                                    Duration="0:0:1"
+                                    RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
+        </Grid>
+        <Grid Margin="0,33,0,0">
+            <ListBox x:Name="lb_foundGames" Margin="0,0,0,0" ItemContainerStyle="{DynamicResource SteamGamesListBoxItemContainerStyle}" Background="#FF24282F" BorderBrush="{x:Null}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="grid_game" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                            <Label x:Name="label" Content="{Binding Name}" FontFamily="Arial" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40,0,0,0">
+                                <Label.Style>
+                                    <Style>
+                                        <Setter Property="Label.Foreground" Value="#FFE9EEF6"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                                <Setter Property="Label.Foreground" Value="#9CA3B2"/>
+                                            </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsInstalled}" Value="False"/>
+                                                    <Condition Binding="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Label.Foreground" Value="#BFC7D3"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <Button x:Name="btn_addGameToLibrary" Style="{DynamicResource SteamGameButton}" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" HorizontalAlignment="Right" Width="40" Height="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=OneWay, Path=ActualHeight}" Margin="0,0,10,0" Click="AddGame"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Label x:Name="lbl_errorMessage" Foreground="#FFCAE4FB" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False"/>
+        </Grid>
     </Grid>
 </Window>

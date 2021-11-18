@@ -107,7 +107,7 @@ namespace FindMySteamDLC.Handlers
                                     }
                                 }
                             }
-                            SteamInfo.FetchDlcs(game);
+                            await SteamInfo.FetchDlcs(game);
                             foundGames.Add(game);
                             //await Task.Run(() => SteamInfo.FetchNonInstalledDlc(game, foundGames));
                         }
@@ -128,7 +128,7 @@ namespace FindMySteamDLC.Handlers
             return await Task.FromResult(foundGames);
         }
 
-        static public bool FetchDlcs(Game game)
+        async static public Task<bool> FetchDlcs(Game game)
         {
             string json = String.Empty, html = String.Empty, fixedName = String.Empty, url = String.Format("https://store.steampowered.com/dlc/{0}/", game.AppID);
             HtmlWeb htmlWeb = new HtmlWeb();
@@ -143,7 +143,7 @@ namespace FindMySteamDLC.Handlers
             catch(Exception e)
             {
                 Console.WriteLine("This game is not found in the steam site. Exception: " + e);
-                return false;
+                return await Task.FromResult(false);
             }
             url += String.Format("{0}/{1}", fixedName, "ajaxgetfilteredrecommendations");
             using (WebClient client = new WebClient())
@@ -199,14 +199,35 @@ namespace FindMySteamDLC.Handlers
                     }
                 }
             }
-            return true;
+            return await Task.FromResult(true);
         }
 
-        static public void FetchAllNonInstalledDlc()
+        async static public Task AddGame(Game game)
+        {
+            if (game.PathToImage == "pack://application:,,,/Resources/unknownimg.png")
+            {
+                using (WebClient client = new WebClient())
+                {
+                    try
+                    {
+                        client.DownloadFile(String.Format("http://cdn.akamai.steamstatic.com/steam/apps/{0}/header.jpg", game.AppID), String.Format(@"{0}\appcache\librarycache\{1}_header.jpg", SteamInfo.PathToSteam, game.AppID));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Couldn't download the game image. Exception: " + e.Message);
+                    }
+                }
+            }
+            await Task.Run(() => SteamInfo.FetchDlcs(game));
+            SteamInfo.Games.Add(game);
+            SQLiteHandler.InsertGame(game);
+        }
+
+        async static public void FetchAllNonInstalledDlc()
         {
             foreach (Game game in SteamInfo.games)
             {
-                SteamInfo.FetchDlcs(game);
+                await SteamInfo.FetchDlcs(game);
             }
             SQLiteHandler.InsertGames(SteamInfo.games);
         }

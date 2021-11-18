@@ -28,7 +28,11 @@ namespace FindMySteamDLC.Models
 
         public string PathToIcon
         {
-            get { return String.Format(@"{0}\appcache\librarycache\{1}_icon.jpg", SteamInfo.PathToSteam, this.AppID); }
+            get 
+            {
+                string pathToIcon = String.Format(@"{0}\appcache\librarycache\{1}_icon.jpg", SteamInfo.PathToSteam, this.AppID);
+                return File.Exists(pathToIcon) ? pathToIcon : "pack://application:,,,/Resources/unknownimg.png";
+            }
         }
 
         public virtual string PathToImage

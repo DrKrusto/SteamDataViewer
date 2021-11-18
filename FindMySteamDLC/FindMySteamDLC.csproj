@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <None Remove="Resources\dlcnotdownloaded.png" />
+    <None Remove="Resources\loading-buffering.gif" />
     <None Remove="Resources\unknownimg.png" />
   </ItemGroup>
 
@@ -34,6 +35,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\dlcnotdownloaded.png" />
+    <Resource Include="Resources\loading-buffering.gif" />
     <Resource Include="Resources\unknownimg.png" />
   </ItemGroup>
 
