@@ -5,12 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FindMySteamDLC"
         mc:Ignorable="d"
-        Title="SearchGamesWindow" Height="450" Width="800" Background="#FF1C1B22">
+        Title="SearchGamesWindow" Height="482" Width="800" Background="#FF1C1B22" WindowStyle="None" ResizeMode="NoResize">
     <Grid Background="#FF2C323B">
-        <Grid Height="33" VerticalAlignment="Top">
-            <Button Style="{DynamicResource SteamButton}" Content="Search" HorizontalAlignment="Left" Margin="229,0,0,0" VerticalAlignment="Center" Height="20" Width="72" Click="Button_Click"/>
-            <TextBox x:Name="tb_gameName" Style="{DynamicResource SteamTextBox}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="214" TextWrapping="Wrap" Background="{x:Null}" SelectionBrush="#FF49566E" Foreground="#FFC8D0DC" SelectionOpacity="0.5" SelectionTextBrush="{x:Null}" CaretBrush="#FFC8D0DC" FontSize="11" FontFamily="Arial" Cursor="IBeam" Padding="3,0,3,0" Margin="10,0,0,0" Height="20" KeyUp="tb_gameName_KeyUp"/>
-            <Label x:Name="img_loadingBuffering" Content="&#xE895;" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Center" Opacity="0" IsHitTestVisible="False" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FFC8D0DC" FontWeight="Normal">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Background="#FF1C1B22" MouseDown="MoveWindow">
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_quitWindow" HorizontalAlignment="Right" Height="24" Margin="677,0,0,0" VerticalAlignment="Center" Width="34" MouseDown="ExitApplication">
+                <Label Content="&#xe8bb;" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="#FF00F593" FontSize="8"/>
+            </Grid>
+            <Grid Style="{DynamicResource WindowButtonBarStyle}" x:Name="btn_minimizeWindow" HorizontalAlignment="Right" Height="24" Margin="643,0,34,0" VerticalAlignment="Center" Width="34
+                  " MouseDown="MinimizeApplication">
+                <Label Content="&#xe921;" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="#FF00F593" FontSize="8" Margin="0,11,0,0"/>
+            </Grid>
+        </Grid>
+        <Grid Height="33" VerticalAlignment="Center" Grid.Row="1">
+            <Button Style="{DynamicResource SteamButton}" Content="Search" HorizontalAlignment="Left" Margin="225,0,0,0" VerticalAlignment="Center" Height="20" Width="72" Click="Button_Click"/>
+            <TextBox x:Name="tb_gameName" Style="{DynamicResource SteamTextBox}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="214" TextWrapping="Wrap" Background="{x:Null}" SelectionBrush="#FF49566E" Foreground="#FFC8D0DC" SelectionOpacity="0.5" SelectionTextBrush="{x:Null}" CaretBrush="#FFC8D0DC" FontSize="11" FontFamily="Arial" Cursor="IBeam" Padding="3,0,3,0" Margin="6,0,0,0" Height="20" KeyUp="tb_gameName_KeyUp"/>
+            <Label x:Name="img_loadingBuffering" Content="&#xE895;" HorizontalAlignment="Left" Margin="296,0,0,0" VerticalAlignment="Center" Opacity="0" IsHitTestVisible="False" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FFC8D0DC" FontWeight="Normal">
                 <Label.RenderTransform>
                     <RotateTransform CenterX="12" CenterY="12" />
                 </Label.RenderTransform>
@@ -36,7 +50,7 @@
                 </Label.Style>
             </Label>
         </Grid>
-        <Grid Margin="0,33,0,0">
+        <Grid Margin="0,33,0,0" Grid.Row="1" Grid.RowSpan="2">
             <ListBox x:Name="lb_foundGames" Margin="0,0,0,0" ItemContainerStyle="{DynamicResource SteamGamesListBoxItemContainerStyle}" Background="#FF24282F" BorderBrush="{x:Null}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

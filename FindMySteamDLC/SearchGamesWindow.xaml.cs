@@ -29,6 +29,24 @@ namespace FindMySteamDLC
             InitializeComponent();
         }
 
+        private void MoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && this.IsActive)
+            {
+                DragMove();
+            }
+        }
+
+        private void ExitApplication(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MinimizeApplication(object sender, MouseButtonEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
         async private void Button_Click(object sender, RoutedEventArgs e)
         {
             string text = this.tb_gameName.Text;
