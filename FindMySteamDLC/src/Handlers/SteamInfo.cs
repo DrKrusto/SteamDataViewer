@@ -204,7 +204,7 @@ namespace FindMySteamDLC.Handlers
 
         async static public Task AddGame(Game game)
         {
-            if (game.PathToImage == "pack://application:,,,/Resources/unknownimg.png")
+            if (game.PathToImage == "pack://application:,,,/Resources/unknownimg.png" || game.PathToImage == "pack://application:,,,/Resources/dlcnotdownloaded.png")
             {
                 using (WebClient client = new WebClient())
                 {
