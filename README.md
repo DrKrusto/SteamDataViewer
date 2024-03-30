@@ -2,7 +2,6 @@
 
 ## A .NET WPF application designed to fetch the Steam games on your computer and to show you all the DLCs available for this game.
 
-![capture](./img/capture.png)
 
 ### My main goal working on this app is to train myself making some good looking UI and to be honest the app itself is not really useful. Nonetheless there is some interesting things happening in the code.
 
