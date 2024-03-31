@@ -7,6 +7,9 @@
         <UseWpf>true</UseWpf>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\SteamDataViewer.UI\SteamDataViewer.UI.csproj" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.2.24128.5" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\SteamDataViewer.Data\SteamDataViewer.Data.csproj" />
     </ItemGroup>
 </Project>
