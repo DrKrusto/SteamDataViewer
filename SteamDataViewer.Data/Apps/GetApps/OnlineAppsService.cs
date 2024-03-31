@@ -1,24 +1,39 @@
-using System.Net;
 using System.Text.Json;
+using FluentResults;
 using HtmlAgilityPack;
 using SteamDataViewer.Data.Apps.Models;
 
 namespace SteamDataViewer.Data.Apps.GetApps;
 
-public class OnlineAppsService
+public interface IOnlineAppsService
 {
-    public async Task<IEnumerable<Dlc>> GetDlcs(string gameAppId)
+    Task<Result<IEnumerable<Dlc>>> GetDlcs(string gameAppId);
+}
+
+public class OnlineAppsService : IOnlineAppsService
+{
+    public async Task<Result<IEnumerable<Dlc>>> GetDlcs(string gameAppId)
     {
+        var dlcs = new List<Dlc>();
+        
         var url = $"https://store.steampowered.com/dlc/{gameAppId}/";
         var htmlWeb = new HtmlWeb();
         
-        var fixedDlcName = (await htmlWeb.LoadFromWebAsync(url))
-            .DocumentNode
-            .SelectSingleNode("//div[contains(concat(' ', normalize-space(@class), ' '), ' curator_avatar_image ')]/a")
-            .Attributes["href"].Value
-            .Split('/')[5];
+        var loaded = await htmlWeb.LoadFromWebAsync(url);
         
-        url += $"{fixedDlcName}/ajaxgetfilteredrecommendations";
+        if (loaded == null) 
+            return Result.Fail("Failed to load the page");
+        
+        var urlGameName = loaded
+            .DocumentNode
+            .SelectSingleNode("//div[contains(concat(' ', normalize-space(@class), ' '), ' curator_avatar_image ')]/a")?
+            .Attributes["href"]?.Value?
+            .Split('/')?[5];
+        
+        if (string.IsNullOrEmpty(urlGameName)) 
+            return Result.Fail("Failed to get the URL game name");
+        
+        url += $"{urlGameName}/ajaxgetfilteredrecommendations";
 
         using var httpClient = new HttpClient();
         var json = await httpClient.GetStringAsync(url);
@@ -32,10 +47,9 @@ public class OnlineAppsService
         var dlcNodes = htmlDocument.DocumentNode
             .SelectNodes("//div[contains(concat(' ', normalize-space(@class), ' '), ' recommendation ')]");
         
-        if (dlcNodes == null) return new List<Dlc>();
-        
-        var dlcs = new List<Dlc>();
-        
+        if (dlcNodes == null) 
+            return Result.Fail("Failed to get the DLC nodes");
+
         foreach (var node in dlcNodes)
         {
             var appId = node
@@ -49,6 +63,6 @@ public class OnlineAppsService
             dlcs.Add(new Dlc(appId, dlcName, gameAppId, false));
         }
         
-        return dlcs;
+        return Result.Ok<IEnumerable<Dlc>>(dlcs);
     }
 }

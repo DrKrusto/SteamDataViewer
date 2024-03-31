@@ -1,4 +1,5 @@
 using SteamDataViewer.Data.Apps.GetApps;
+using SteamDataViewer.Data.Apps.Models;
 
 namespace SteamDataViewer.Data;
 
@@ -16,7 +17,11 @@ public class Program
             
             foreach (var game in games)
             {
-                var dlcs = await onlineAppsService.GetDlcs(game.AppId);
+                var dlcsResult = await onlineAppsService.GetDlcs(game.AppId);
+                if (dlcsResult.IsSuccess)
+                {
+                    var slkd = dlcsResult.Value;
+                }
             }
         }
 

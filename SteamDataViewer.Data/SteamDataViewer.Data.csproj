@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentResults" Version="3.15.2" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.60" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0-preview.2.24128.5" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
