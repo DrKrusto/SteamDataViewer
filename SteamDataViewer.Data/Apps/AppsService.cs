@@ -6,13 +6,13 @@ namespace SteamDataViewer.Data.Apps;
 
 public interface IAppsService
 {
-    Task<IEnumerable<Game>> GetGames();
+    Task<Result<IEnumerable<Game>>> GetGames();
 }
 
-public class AppsService(LocalAppsService localAppsService, OnlineAppsService onlineAppsService)
+public class AppsService(ILocalAppsService localAppsService, IOnlineAppsService onlineAppsService) : IAppsService
 {
-    private readonly LocalAppsService localAppsService = localAppsService ?? throw new ArgumentNullException(nameof(localAppsService));
-    private readonly OnlineAppsService onlineAppsService = onlineAppsService ?? throw new ArgumentNullException(nameof(onlineAppsService));
+    private readonly ILocalAppsService localAppsService = localAppsService ?? throw new ArgumentNullException(nameof(localAppsService));
+    private readonly IOnlineAppsService onlineAppsService = onlineAppsService ?? throw new ArgumentNullException(nameof(onlineAppsService));
 
     public async Task<Result<IEnumerable<Game>>> GetGames()
     {

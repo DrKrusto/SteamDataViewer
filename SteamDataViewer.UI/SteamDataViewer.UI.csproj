@@ -9,37 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Page Update="MainWindow.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="SearchGamesWindow.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
+      <ProjectReference Include="..\SteamDataViewer.Data\SteamDataViewer.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ApplicationDefinition Include="App.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </ApplicationDefinition>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Resource Include="Resources\dlcnotdownloaded.png" />
-      <Resource Include="Resources\loading-buffering.gif" />
-      <Resource Include="Resources\unknownimg.png" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Update="Properties\Resources.resx">
-        <Generator>PublicResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.2.24128.5" />
     </ItemGroup>
 
 </Project>
