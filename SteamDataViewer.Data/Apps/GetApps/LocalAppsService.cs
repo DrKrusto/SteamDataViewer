@@ -13,18 +13,23 @@ public interface ILocalAppsService
 
 public class LocalAppsService : ILocalAppsService
 {
+    private string steamPathCache = string.Empty;
+    
     private static readonly Regex AppIdRegex = new(@"appmanifest_(?'appId'\d*).acf", RegexOptions.Compiled);
     private static readonly Regex AcfFileRegex = new(
-            @"""appid"".*""(?'appid'.*)""|""name"".*""(?'name'.*)"".*|""InstalledDepots""\s*\{(?:\s*""(?'depotid'\d+)""\s*\{[^{}]*\}\s*)+}",
-            RegexOptions.Multiline
-        );
-    
+        @"""appid"".*""(?'appid'.*)""|""name"".*""(?'name'.*)"".*|""InstalledDepots""\s*\{(?:\s*""(?'depotid'\d+)""\s*\{[^{}]*\}\s*)+}",
+        RegexOptions.Multiline
+    );
+
     public string GetSteamPathFromRegistry()
-    #pragma warning disable CA1416
-    => Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Valve\Steam")?.GetValue("InstallPath")?.ToString()
-       ?? Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Valve\Steam")?.GetValue("InstallPath")?.ToString()
-       ?? string.Empty;
-    #pragma warning restore CA1416
+    {
+        if (!string.IsNullOrEmpty(steamPathCache))
+            return steamPathCache;
+        
+        return steamPathCache = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Valve\Steam")?.GetValue("InstallPath")?.ToString()
+               ?? Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Valve\Steam")?.GetValue("InstallPath")?.ToString()
+               ?? string.Empty;
+    }
     
     public async Task<IEnumerable<Game>> GetGamesFromFiles(string pathToSteam)
     {
