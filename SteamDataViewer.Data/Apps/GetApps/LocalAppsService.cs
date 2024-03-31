@@ -1,11 +1,8 @@
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using SteamDataViewer.Data.Apps.Models;
 
 namespace SteamDataViewer.Data.Apps.GetApps;
-
-public record Game(string AppID, string Name, bool IsInstalled, Dictionary<int, Dlc> Dlcs);
-
-public record Dlc(Game Game, int AppID, bool IsInstalled);
 
 public interface ILocalAppsService
 {
@@ -17,7 +14,10 @@ public interface ILocalAppsService
 public class LocalAppsService : ILocalAppsService
 {
     private static readonly Regex AppIdRegex = new(@"appmanifest_(?'appId'\d*).acf", RegexOptions.Compiled);
-    private static readonly Regex AcfFileRegex = new(@"""appid"".*""(?'appid'.*)""|""name"".*""(?'name'.*)"".*", RegexOptions.Compiled);
+    private static readonly Regex AcfFileRegex = new(
+            @"""appid"".*""(?'appid'.*)""|""name"".*""(?'name'.*)"".*|""InstalledDepots""\s*\{(?:\s*""(?'depotid'\d+)""\s*\{[^{}]*\}\s*)+}",
+            RegexOptions.Multiline
+        );
     
     public string GetSteamPathFromRegistry()
     #pragma warning disable CA1416
@@ -38,15 +38,22 @@ public class LocalAppsService : ILocalAppsService
             var lines = await reader.ReadToEndAsync();
             
             var fileRegex = AcfFileRegex.Matches(lines);
+            
+            var depots = fileRegex
+                .FirstOrDefault(x => x.Groups["depotid"].Success)?
+                .Groups["depotid"]
+                .Captures.Select(x => x.Value)
+                .ToList();
 
-            var foundGame = new Game(
+            var game = new Game(
                 fileRegex.First(x => x.Groups["appid"].Success).Groups["appid"].Value,
                 fileRegex.First(x => x.Groups["name"].Success).Groups["name"].Value,
                 true,
-                new Dictionary<int, Dlc>()
+                [],
+                depots ?? []
             );
             
-            games.Add(foundGame);
+            games.Add(game);
         }
         return games;
     }
